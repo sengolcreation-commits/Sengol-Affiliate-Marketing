@@ -1,1 +1,404 @@
-const STORAGE_KEY="sengolShoppingProducts";const SOCIALS=[["Instagram","https://www.instagram.com/sengol_fashion?igsh=MXJmdmk3cWx1MWkwdQ=="],["Pinterest","https://pin.it/1gLdGoSRR"],["Facebook","https://www.facebook.com/profile.php?id=61593100736281&mibextid=ZbWKwL"],["WhatsApp Channel","https://whatsapp.com/channel/0029VbCpLAEJpe8ds88N1m08"],["YouTube","https://youtube.com/@sengolgroup?si=4YkCgFKl-msRLu_3"],["X / Twitter","#"],["Telegram","#"]];const PLATFORMS=[["Amazon","#","https://www.amazon.in/"],["Flipkart","#","https://www.flipkart.com/"],["Meesho","#","https://www.meesho.com/"],["Myntra","#","https://www.myntra.com/"],["AJIO","#","https://www.ajio.com/"],["Tata CLiQ","#","https://www.tatacliq.com/"],["Shopsy","#","https://www.shopsy.in/"]];function products(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}function esc(v){return String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}function initWelcome(){const w=document.getElementById("welcome-screen"),b=document.getElementById("enter-site");if(!w)return;b.addEventListener("click",()=>w.classList.add("hide"));setTimeout(()=>w.classList.add("hide"),7000)}function initMenu(){const b=document.getElementById("menu-btn"),m=document.getElementById("main-menu");if(!b||!m)return;b.addEventListener("click",()=>{m.classList.toggle("menu-open");b.setAttribute("aria-expanded",m.classList.contains("menu-open"))});m.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>m.classList.remove("menu-open")))}function renderPlatforms(){const g=document.getElementById("platform-grid");if(!g)return;g.innerHTML=PLATFORMS.map((p,i)=>`<button class="platform-card" data-platform="${i}"><div class="platform-logo">${esc(p[0])}</div><span>Explore →</span></button>`).join("");g.querySelectorAll("[data-platform]").forEach(b=>b.addEventListener("click",()=>openPlatform(Number(b.dataset.platform))))}function openPlatform(i){const p=PLATFORMS[i],m=document.getElementById("platform-modal"),a=document.getElementById("platform-actions"),t=document.getElementById("platform-title");t.textContent=p[0];a.innerHTML=`<a class="btn primary" href="${p[1]==="#"?p[2]:p[1]}" target="_blank" rel="noopener noreferrer nofollow">Shop with Sengol Affiliate</a><a class="btn secondary" href="${p[2]}" target="_blank" rel="noopener noreferrer">Visit ${esc(p[0])} Directly</a>`;m.hidden=false}function renderProducts(){const g=document.getElementById("product-grid"),e=document.getElementById("empty-products"),q=(document.getElementById("product-search")?.value||"").toLowerCase(),c=document.getElementById("category-filter")?.value||"all";if(!g)return;let list=products().filter(p=>(c==="all"||p.category===c)&&(!q||p.name.toLowerCase().includes(q)||p.description.toLowerCase().includes(q)));g.innerHTML=list.map(p=>`<article class="product-card"><div class="product-image"><img src="${esc(p.image||"")}" alt="${esc(p.name)}"></div><p class="product-category">${esc(p.category)}</p><h3>${esc(p.name)}</h3><p>${esc(p.description)}</p>${p.price?`<p class="product-price">₹${esc(p.price)}</p>`:""}<p class="product-rating">Rating: ${esc(p.rating||"5")} / 5</p><a class="btn primary" href="${esc(p.affiliateLink||"#")}" target="_blank" rel="noopener noreferrer nofollow">Shop Now →</a></article>`).join("");e.hidden=list.length!==0}function renderSocials(){const g=document.getElementById("social-grid");if(!g)return;g.innerHTML=SOCIALS.map(s=>`<a class="social-card" href="${s[1]}" target="_blank" rel="noopener noreferrer">${esc(s[0])} →</a>`).join("")}function initAuth(){const modal=document.getElementById("auth-modal"),login=document.getElementById("login-btn"),form=document.getElementById("auth-form"),toggle=document.getElementById("toggle-auth"),logout=document.getElementById("logout-btn"),title=document.getElementById("auth-title"),name=document.getElementById("auth-name");let signup=false;function refresh(){const u=JSON.parse(localStorage.getItem("sengolUser")||"null");login.textContent=u?`Hi, ${u.name}`:"Login";logout.hidden=!u;form.hidden=!!u;toggle.hidden=!!u;name.required=signup}refresh();login.addEventListener("click",()=>modal.hidden=false);toggle.addEventListener("click",()=>{signup=!signup;title.textContent=signup?"Create account":"Login";toggle.textContent=signup?"Already have an account? Login":"Create account";name.required=signup});form.addEventListener("submit",e=>{e.preventDefault();const u={name:name.value.trim()||"Customer",email:document.getElementById("auth-email").value};localStorage.setItem("sengolUser",JSON.stringify(u));alert("Account saved on this device.");modal.hidden=true;refresh()});logout.addEventListener("click",()=>{localStorage.removeItem("sengolUser");refresh()})}function initAffiliate(){const b=document.getElementById("generate-affiliate"),i=document.getElementById("affiliate-source"),r=document.getElementById("affiliate-result");if(!b)return;b.addEventListener("click",()=>{const u=i.value.trim();if(!u){r.textContent="Paste an authorized affiliate URL first.";return}try{new URL(u);r.innerHTML=`<p>Authorized URL prepared:</p><input value="${esc(u)}" readonly><button class="btn primary" id="copy-affiliate">Copy Link</button>`;document.getElementById("copy-affiliate").onclick=()=>navigator.clipboard.writeText(u).then(()=>alert("Link copied."))}catch(e){r.textContent="Please enter a valid URL."}})}document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>document.getElementById(b.dataset.close).hidden=true));document.addEventListener("DOMContentLoaded",()=>{initWelcome();initMenu();renderPlatforms();renderProducts();renderSocials();initAuth();initAffiliate();document.getElementById("product-search")?.addEventListener("input",renderProducts);document.getElementById("category-filter")?.addEventListener("change",renderProducts);document.getElementById("sell-form")?.addEventListener("submit",e=>{e.preventDefault();alert("Product submission received. Admin review is required before publishing.");e.target.reset()})});
+ const KEY = "sengolShoppingProducts";
+const SITE_RATING_KEY = "sengolSiteRatings";
+
+let editId = null;
+
+const $ = id => document.getElementById(id);
+
+function get() {
+    try {
+        return JSON.parse(localStorage.getItem(KEY)) || [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function save(x) {
+    localStorage.setItem(KEY, JSON.stringify(x));
+}
+
+function esc(v) {
+    return String(v || "").replace(/[&<>"']/g, m => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    }[m]));
+}
+
+/* =========================
+   RESET FORM
+========================= */
+
+function reset() {
+    editId = null;
+
+    $("productForm").reset();
+
+    if ($("productRating")) {
+        $("productRating").value = "5";
+    }
+
+    $("submitBtn").textContent = "Add Product";
+}
+
+/* =========================
+   RENDER PRODUCTS
+========================= */
+
+function render() {
+
+    const searchBox = $("searchProducts");
+
+    const q = searchBox
+        ? (searchBox.value || "").toLowerCase()
+        : "";
+
+    const list = get().filter(p =>
+        (p.name || "").toLowerCase().includes(q)
+    );
+
+    $("productList").innerHTML =
+        list.map(p => `
+
+        <div class="panel" style="margin:15px 0">
+
+            <h3>${esc(p.name)}</h3>
+
+            <p>
+                ${esc(p.category)}
+                ${p.price ? ` • ₹${esc(p.price)}` : ""}
+            </p>
+
+            <p>
+                ${esc(p.description)}
+            </p>
+
+            <p>
+                Product Rating:
+                ⭐ ${esc(p.rating || "5")}/5
+            </p>
+
+            ${
+                p.discount
+                    ? `<p>Discount: ${esc(p.discount)}%</p>`
+                    : ""
+            }
+
+            ${
+                p.trending
+                    ? `<p>Trending Product</p>`
+                    : ""
+            }
+
+            ${
+                p.featured
+                    ? `<p>Featured Product</p>`
+                    : ""
+            }
+
+            <div class="actions">
+
+                <button
+                    class="btn secondary"
+                    onclick="edit('${p.id}')">
+                    Edit
+                </button>
+
+                <button
+                    class="btn primary"
+                    onclick="del('${p.id}')">
+                    Delete
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join("") || "<div class='empty'>No products.</div>";
+}
+
+/* =========================
+   EDIT PRODUCT
+========================= */
+
+function edit(id) {
+
+    const p = get().find(x => x.id === id);
+
+    if (!p) return;
+
+    editId = id;
+
+    $("productName").value = p.name || "";
+    $("productCategory").value = p.category || "";
+    $("productPrice").value = p.price || "";
+    $("productDiscount").value = p.discount || "";
+    $("productImage").value = p.image || "";
+    $("productDescription").value = p.description || "";
+    $("affiliateLink").value = p.affiliateLink || "";
+
+    if ($("productRating")) {
+        $("productRating").value = p.rating || "5";
+    }
+
+    $("isTrending").checked = !!p.trending;
+    $("isFeatured").checked = !!p.featured;
+
+    $("submitBtn").textContent = "Update Product";
+
+    scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+/* =========================
+   DELETE PRODUCT
+========================= */
+
+function del(id) {
+
+    if (!confirm("Delete this product?")) {
+        return;
+    }
+
+    save(
+        get().filter(p => p.id !== id)
+    );
+
+    render();
+}
+
+/* =========================
+   ADD / UPDATE PRODUCT
+========================= */
+
+$("productForm").addEventListener("submit", e => {
+
+    e.preventDefault();
+
+    const p = {
+
+        id: editId || Date.now().toString(),
+
+        name: $("productName").value.trim(),
+
+        category: $("productCategory").value,
+
+        price: $("productPrice").value.trim(),
+
+        discount: $("productDiscount").value.trim(),
+
+        image: $("productImage").value.trim(),
+
+        description:
+            $("productDescription").value.trim(),
+
+        affiliateLink:
+            $("affiliateLink").value.trim(),
+
+        rating:
+            $("productRating")
+                ? $("productRating").value
+                : "5",
+
+        trending:
+            $("isTrending").checked,
+
+        featured:
+            $("isFeatured").checked
+    };
+
+    if (
+        !p.name ||
+        !p.category ||
+        !p.description ||
+        !p.affiliateLink
+    ) {
+
+        alert("Fill all required fields.");
+
+        return;
+    }
+
+    const a = get();
+
+    const i = a.findIndex(
+        x => x.id === p.id
+    );
+
+    if (i >= 0) {
+        a[i] = p;
+    } else {
+        a.unshift(p);
+    }
+
+    save(a);
+
+    reset();
+
+    render();
+
+    alert(
+        editId
+            ? "Product updated successfully."
+            : "Product added successfully."
+    );
+});
+
+/* =========================
+   CLEAR BUTTON
+========================= */
+
+if ($("clearBtn")) {
+
+    $("clearBtn").onclick = reset;
+
+}
+
+/* =========================
+   PRODUCT SEARCH
+========================= */
+
+if ($("searchProducts")) {
+
+    $("searchProducts").oninput = render;
+
+}
+
+/* =========================
+   SITE RATING
+========================= */
+
+function getSiteRatings() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(SITE_RATING_KEY)
+        ) || [];
+
+    } catch (e) {
+
+        return [];
+
+    }
+}
+
+function saveSiteRating(rating) {
+
+    const ratings = getSiteRatings();
+
+    ratings.push({
+        rating: Number(rating),
+        date: new Date().toISOString()
+    });
+
+    localStorage.setItem(
+        SITE_RATING_KEY,
+        JSON.stringify(ratings)
+    );
+
+}
+
+/* =========================
+   SITE RATING DISPLAY
+========================= */
+
+function renderSiteRating() {
+
+    const ratings = getSiteRatings();
+
+    const total = ratings.length;
+
+    const average =
+        total > 0
+            ? ratings.reduce(
+                (sum, item) =>
+                    sum + Number(item.rating),
+                0
+            ) / total
+            : 0;
+
+    const averageRounded =
+        total > 0
+            ? average.toFixed(1)
+            : "0.0";
+
+    const adminRating =
+        $("siteRatingAverage");
+
+    const adminCount =
+        $("siteRatingCount");
+
+    if (adminRating) {
+
+        adminRating.textContent =
+            `⭐ ${averageRounded}/5`;
+
+    }
+
+    if (adminCount) {
+
+        adminCount.textContent =
+            `${total} rating${total === 1 ? "" : "s"}`;
+
+    }
+
+}
+
+/* =========================
+   SITE RATING FORM
+========================= */
+
+const siteRatingForm =
+    $("siteRatingForm");
+
+if (siteRatingForm) {
+
+    siteRatingForm.addEventListener(
+        "submit",
+        e => {
+
+            e.preventDefault();
+
+            const selected =
+                document.querySelector(
+                    'input[name="siteRating"]:checked'
+                );
+
+            if (!selected) {
+
+                alert(
+                    "Please select a rating."
+                );
+
+                return;
+            }
+
+            saveSiteRating(
+                selected.value
+            );
+
+            alert(
+                "Thank you for rating Sengol!"
+            );
+
+            siteRatingForm.reset();
+
+            renderSiteRating();
+
+        }
+    );
+
+}
+
+/* =========================
+   START
+========================= */
+
+render();
+
+renderSiteRating();
