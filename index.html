@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sengol Affiliate Marketing — Discover, compare and shop smarter.">
+<title>Sengol Affiliate Marketing</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="welcome-screen" class="welcome-screen">
+  <div class="welcome-orb"></div>
+  <div class="welcome-content">
+    <div class="welcome-mark">S</div>
+    <p class="eyebrow">EST. 2026</p>
+    <h1>Welcome to <span>Sengol</span></h1>
+    <p>Sengol Affiliate Marketing</p>
+    <button id="enter-site" class="btn primary">Enter Sengol</button>
+  </div>
+</div>
+
+<header class="header">
+  <div class="container nav">
+    <a href="#home" class="logo">
+      <img src="Logo.png" alt="Sengol Affiliate Marketing logo">
+      <span>SENGOL <small>AFFILIATE</small></span>
+    </a>
+
+    <nav class="menu" id="main-menu">
+      <a href="#home">Home</a>
+      <a href="#shopping">Shopping</a>
+      <a href="#products">Products</a>
+      <a href="#sell">Sell</a>
+      <a href="#affiliate">Affiliate</a>
+      <a href="#about">About</a>
+      <a href="#support">Support</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button id="login-btn" class="mini-btn">Login</button>
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="home">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">DISCOVER • EXPLORE • SHOP SMARTER</p>
+      <h1>Your gateway to <span>smarter shopping.</span></h1>
+      <p class="hero-text">Discover products, compare shopping routes, explore affiliate offers and connect with Sengol.</p>
+      <div class="actions">
+        <a class="btn primary" href="#shopping">Start Shopping</a>
+        <a class="btn secondary" href="#affiliate">Affiliate Center</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="floating-card">SENGOL</div>
+      <p>One place for discovery, shopping and affiliate opportunities.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="shopping">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-label">SHOPPING HUB</p>
+      <h2>Choose a shopping platform</h2>
+      <p>Select a platform and choose whether to shop through an authorized Sengol affiliate route or visit the official site directly.</p>
+    </div>
+    <div id="platform-grid" class="platform-grid"></div>
+  </div>
+</section>
+
+<section class="section light" id="products">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-label">DISCOVER</p>
+      <h2>Featured products</h2>
+      <p>Products added through the connected admin panel appear here.</p>
+    </div>
+    <div class="toolbar">
+      <input id="product-search" type="search" placeholder="Search products...">
+      <select id="category-filter">
+        <option value="all">All categories</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Home Decor">Home Decor</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div id="product-grid" class="product-grid"></div>
+    <div id="empty-products" class="empty" hidden>No products have been added yet.</div>
+  </div>
+</section>
+
+<section class="section" id="sell">
+  <div class="container two-col">
+    <div>
+      <p class="section-label">SELL / SUBMIT</p>
+      <h2>Want to list a product?</h2>
+      <p>Send a product proposal. The Sengol team can review submissions before publishing them.</p>
+    </div>
+    <form id="sell-form" class="panel">
+      <input id="seller-name" required placeholder="Your name">
+      <input id="seller-contact" required placeholder="Email or phone">
+      <input id="seller-product" required placeholder="Product name">
+      <input id="seller-url" type="url" placeholder="Product URL">
+      <textarea id="seller-message" placeholder="Tell us about the product"></textarea>
+      <button class="btn primary" type="submit">Submit Product</button>
+    </form>
+  </div>
+</section>
+
+<section class="section light" id="affiliate">
+  <div class="container two-col">
+    <div>
+      <p class="section-label">AFFILIATE CENTER</p>
+      <h2>Generate an affiliate link</h2>
+      <p>Paste a product URL from a supported affiliate program. The demo below prepares a copyable link only when an authorized affiliate URL is supplied by you.</p>
+      <div class="notice">Do not invent or alter affiliate parameters. Use the official affiliate dashboard/API for each network.</div>
+    </div>
+    <div class="panel">
+      <input id="affiliate-source" type="url" placeholder="Paste an authorized affiliate/product URL">
+      <button id="generate-affiliate" class="btn primary">Prepare Link</button>
+      <div id="affiliate-result" class="result"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="container about-card">
+    <p class="section-label">ABOUT SENGOL</p>
+    <h2>Sengol Affiliate Marketing</h2>
+    <p>Sengol is being developed as a shopping discovery and affiliate ecosystem where people can discover products, visit participating marketplaces and connect with the Sengol brand.</p>
+    <p>Purchases are completed on the relevant marketplace unless Sengol explicitly provides a direct checkout service.</p>
+  </div>
+</section>
+
+<section class="section light" id="support">
+  <div class="container support">
+    <p class="section-label">SUPPORT</p>
+    <h2>Support Sengol</h2>
+    <p>If you want to support the project, use the official UPI QR supplied by the site owner.</p>
+    <img class="qr" src="upi-qr.png" alt="Sengol UPI QR code" onerror="this.style.display='none'">
+    <p class="muted">Payment is voluntary support. No purchase is required to support the project.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-label">COMMUNITY</p>
+      <h2>Follow Sengol</h2>
+    </div>
+    <div id="social-grid" class="social-grid"></div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><strong>SENGOL</strong><p>Discover • Explore • Shop Smarter.</p><p>© 2026 Sengol Affiliate Marketing.</p></div>
+    <div><h3>Legal</h3><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms & Conditions</a><a href="affiliate-disclosure.html">Affiliate Disclosure</a></div>
+    <div><h3>Contact</h3><a href="mailto:sengolcreation@gmail.com">Email</a><a href="https://wa.me/916307703135" target="_blank" rel="noopener">WhatsApp</a><a href="admin.html">Admin</a></div>
+  </div>
+</footer>
+
+<div id="platform-modal" class="modal" hidden>
+  <div class="modal-box">
+    <button class="close-modal" data-close="platform-modal">×</button>
+    <p class="section-label">SHOP WITH SENGOL</p>
+    <h2 id="platform-title">Platform</h2>
+    <p>Choose how you want to continue.</p>
+    <div id="platform-actions" class="actions stacked"></div>
+  </div>
+</div>
+
+<div id="auth-modal" class="modal" hidden>
+  <div class="modal-box">
+    <button class="close-modal" data-close="auth-modal">×</button>
+    <p class="section-label">ACCOUNT</p>
+    <h2 id="auth-title">Login</h2>
+    <form id="auth-form">
+      <input id="auth-name" placeholder="Name">
+      <input id="auth-email" type="email" required placeholder="Email">
+      <input id="auth-password" type="password" required placeholder="Password">
+      <button class="btn primary" type="submit">Continue</button>
+    </form>
+    <button id="toggle-auth" class="text-btn">Create account</button>
+    <button id="logout-btn" class="text-btn" hidden>Logout</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
