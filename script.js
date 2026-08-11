@@ -1,5 +1,9 @@
  const STORAGE_KEY = "sengolShoppingProducts";
 
+/* =========================
+   SOCIAL LINKS
+========================= */
+
 const SOCIALS = [
     [
         "Instagram",
@@ -23,7 +27,7 @@ const SOCIALS = [
     ],
     [
         "X / Twitter",
-        "#"
+        "https://x.com/sengolaffiliate"
     ],
     [
         "Telegram",
@@ -74,39 +78,31 @@ const PLATFORMS = [
 ];
 
 /* =========================
-   GET PRODUCTS
+   HELPERS
 ========================= */
 
 function products() {
-
     try {
-
         return JSON.parse(
             localStorage.getItem(STORAGE_KEY)
         ) || [];
-
     } catch (e) {
-
         return [];
-
     }
 }
 
-/* =========================
-   ESCAPE HTML
-========================= */
-
 function esc(value) {
-
     return String(value || "").replace(
         /[&<>"']/g,
-        m => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#039;"
-        }[m])
+        function (m) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[m];
+        }
     );
 }
 
@@ -115,7 +111,6 @@ function esc(value) {
 ========================= */
 
 function initWelcome() {
-
     const welcome =
         document.getElementById("welcome-screen");
 
@@ -125,20 +120,14 @@ function initWelcome() {
     if (!welcome) return;
 
     if (button) {
-
-        button.addEventListener(
-            "click",
-            () => {
-                welcome.classList.add("hide");
-            }
-        );
-
+        button.addEventListener("click", function () {
+            welcome.classList.add("hide");
+        });
     }
 
-    setTimeout(
-        () => welcome.classList.add("hide"),
-        7000
-    );
+    setTimeout(function () {
+        welcome.classList.add("hide");
+    }, 7000);
 }
 
 /* =========================
@@ -146,7 +135,6 @@ function initWelcome() {
 ========================= */
 
 function initMenu() {
-
     const button =
         document.getElementById("menu-btn");
 
@@ -155,38 +143,25 @@ function initMenu() {
 
     if (!button || !menu) return;
 
-    button.addEventListener(
-        "click",
-        () => {
+    button.addEventListener("click", function () {
+        menu.classList.toggle("menu-open");
 
-            menu.classList.toggle(
-                "menu-open"
-            );
+        button.setAttribute(
+            "aria-expanded",
+            menu.classList.contains("menu-open")
+        );
+    });
+
+    menu.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+            menu.classList.remove("menu-open");
 
             button.setAttribute(
                 "aria-expanded",
-                menu.classList.contains(
-                    "menu-open"
-                )
+                "false"
             );
-
-        }
-    );
-
-    menu
-        .querySelectorAll("a")
-        .forEach(link => {
-
-            link.addEventListener(
-                "click",
-                () => {
-                    menu.classList.remove(
-                        "menu-open"
-                    );
-                }
-            );
-
         });
+    });
 }
 
 /* =========================
@@ -194,56 +169,42 @@ function initMenu() {
 ========================= */
 
 function renderPlatforms() {
-
     const grid =
-        document.getElementById(
-            "platform-grid"
-        );
+        document.getElementById("platform-grid");
 
     if (!grid) return;
 
-    grid.innerHTML =
-        PLATFORMS.map(
-            (platform, index) => `
+    grid.innerHTML = PLATFORMS.map(
+        function (platform, index) {
+            return `
+                <button
+                    class="platform-card"
+                    data-platform="${index}"
+                    type="button"
+                >
+                    <div class="platform-logo">
+                        ${esc(platform[0])}
+                    </div>
 
-            <button
-                class="platform-card"
-                data-platform="${index}"
-                type="button"
-            >
-
-                <div class="platform-logo">
-                    ${esc(platform[0])}
-                </div>
-
-                <span>
-                    Explore →
-                </span>
-
-            </button>
-
-        `
-        ).join("");
+                    <span>
+                        Explore →
+                    </span>
+                </button>
+            `;
+        }
+    ).join("");
 
     grid
-        .querySelectorAll(
-            "[data-platform]"
-        )
-        .forEach(button => {
-
+        .querySelectorAll("[data-platform]")
+        .forEach(function (button) {
             button.addEventListener(
                 "click",
-                () => {
-
+                function () {
                     openPlatform(
-                        Number(
-                            button.dataset.platform
-                        )
+                        Number(button.dataset.platform)
                     );
-
                 }
             );
-
         });
 }
 
@@ -252,39 +213,25 @@ function renderPlatforms() {
 ========================= */
 
 function openPlatform(index) {
-
-    const platform =
-        PLATFORMS[index];
+    const platform = PLATFORMS[index];
 
     if (!platform) return;
 
     const modal =
-        document.getElementById(
-            "platform-modal"
-        );
+        document.getElementById("platform-modal");
 
     const actions =
-        document.getElementById(
-            "platform-actions"
-        );
+        document.getElementById("platform-actions");
 
     const title =
-        document.getElementById(
-            "platform-title"
-        );
+        document.getElementById("platform-title");
 
-    if (!modal || !actions || !title) {
-        return;
-    }
+    if (!modal || !actions || !title) return;
 
-    title.textContent =
-        platform[0];
+    title.textContent = platform[0];
 
-    const affiliateUrl =
-        platform[1];
-
-    const directUrl =
-        platform[2];
+    const affiliateUrl = platform[1];
+    const directUrl = platform[2];
 
     let affiliateButton = "";
 
@@ -292,9 +239,7 @@ function openPlatform(index) {
         affiliateUrl &&
         affiliateUrl !== "#"
     ) {
-
         affiliateButton = `
-
             <a
                 class="btn primary"
                 href="${esc(affiliateUrl)}"
@@ -303,27 +248,18 @@ function openPlatform(index) {
             >
                 🔗 Shop with Sengol Affiliate
             </a>
-
         `;
-
     } else {
-
         affiliateButton = `
-
             <div class="notice">
-
                 Affiliate route for
                 ${esc(platform[0])}
                 is not connected yet.
-
             </div>
-
         `;
-
     }
 
     actions.innerHTML = `
-
         ${affiliateButton}
 
         <a
@@ -334,7 +270,6 @@ function openPlatform(index) {
         >
             🏪 Visit ${esc(platform[0])} Directly
         </a>
-
     `;
 
     modal.hidden = false;
@@ -345,32 +280,25 @@ function openPlatform(index) {
 ========================= */
 
 function getProductType(type) {
-
     if (type === "sengol") {
-
         return {
             label: "🛍️ Sengol Product",
             button: "Buy Sengol Product →"
         };
-
     }
 
     if (type === "affiliate") {
-
         return {
             label: "🔗 Affiliate Product",
             button: "Shop via Sengol →"
         };
-
     }
 
     if (type === "marketplace") {
-
         return {
             label: "🏪 Marketplace Product",
             button: "Visit Store →"
         };
-
     }
 
     return {
@@ -380,51 +308,32 @@ function getProductType(type) {
 }
 
 /* =========================
-   PRODUCT PURCHASE URL
+   PRODUCT URL
 ========================= */
 
 function getProductURL(product) {
-
-    /*
-       Sengol product:
-       Prefer direct product link.
-
-       Affiliate product:
-       Prefer authorized affiliate link.
-
-       Marketplace product:
-       Prefer direct official link,
-       otherwise purchase link.
-    */
-
     if (product.productType === "sengol") {
-
         return (
             product.directLink ||
             product.affiliateLink ||
             "#"
         );
-
     }
 
     if (product.productType === "affiliate") {
-
         return (
             product.affiliateLink ||
             product.directLink ||
             "#"
         );
-
     }
 
     if (product.productType === "marketplace") {
-
         return (
             product.directLink ||
             product.affiliateLink ||
             "#"
         );
-
     }
 
     return (
@@ -435,70 +344,63 @@ function getProductURL(product) {
 }
 
 /* =========================
-   RENDER PRODUCTS
+   PRODUCT RENDER
 ========================= */
 
 function renderProducts() {
-
     const grid =
-        document.getElementById(
-            "product-grid"
-        );
+        document.getElementById("product-grid");
 
     const empty =
-        document.getElementById(
-            "empty-products"
-        );
+        document.getElementById("empty-products");
 
-    const search =
-        (
-            document.getElementById(
-                "product-search"
-            )?.value || ""
-        ).toLowerCase();
+    const searchInput =
+        document.getElementById("product-search");
 
-    const category =
-        document.getElementById(
-            "category-filter"
-        )?.value || "all";
+    const categoryInput =
+        document.getElementById("category-filter");
 
     if (!grid) return;
 
-    const list =
-        products().filter(product => {
+    const search =
+        (
+            searchInput
+                ? searchInput.value
+                : ""
+        ).toLowerCase();
 
+    const category =
+        categoryInput
+            ? categoryInput.value
+            : "all";
+
+    const list = products().filter(
+        function (product) {
             const name =
-                (
-                    product.name || ""
-                ).toLowerCase();
+                (product.name || "").toLowerCase();
 
             const description =
-                (
-                    product.description || ""
-                ).toLowerCase();
+                (product.description || "")
+                    .toLowerCase();
+
+            const matchesCategory =
+                category === "all" ||
+                product.category === category;
+
+            const matchesSearch =
+                !search ||
+                name.includes(search) ||
+                description.includes(search);
 
             return (
-
-                (
-                    category === "all" ||
-                    product.category === category
-                )
-
-                &&
-
-                (
-                    !search ||
-                    name.includes(search) ||
-                    description.includes(search)
-                )
-
+                matchesCategory &&
+                matchesSearch
             );
+        }
+    );
 
-        });
-
-    grid.innerHTML =
-        list.map(product => {
-
+    grid.innerHTML = list.map(
+        function (product) {
             const type =
                 getProductType(
                     product.productType
@@ -508,179 +410,158 @@ function renderProducts() {
                 getProductURL(product);
 
             return `
+                <article class="product-card">
 
-            <article
-                class="product-card"
-            >
+                    <div class="product-image">
+                        ${
+                            product.image
+                                ? `
+                                    <img
+                                        src="${esc(product.image)}"
+                                        alt="${esc(product.name)}"
+                                        loading="lazy"
+                                    >
+                                  `
+                                : `
+                                    <div
+                                        style="
+                                            height:100%;
+                                            display:grid;
+                                            place-items:center;
+                                            font-weight:800;
+                                            color:#777;
+                                        "
+                                    >
+                                        SENGOL
+                                    </div>
+                                  `
+                        }
+                    </div>
 
-                <div
-                    class="product-image"
-                >
+                    <p class="product-category">
+                        ${esc(product.category)}
+                    </p>
 
-                    <img
-                        src="${esc(
-                            product.image || ""
-                        )}"
-                        alt="${esc(
-                            product.name
-                        )}"
-                        loading="lazy"
-                    >
+                    <p>
+                        <strong>
+                            ${esc(type.label)}
+                        </strong>
+                    </p>
 
-                </div>
+                    <h3>
+                        ${esc(product.name)}
+                    </h3>
 
-                <p
-                    class="product-category"
-                >
-                    ${esc(
-                        product.category
-                    )}
-                </p>
+                    <p>
+                        ${esc(product.description)}
+                    </p>
 
-                <p>
-                    <strong>
-                        ${esc(type.label)}
-                    </strong>
-                </p>
+                    ${
+                        product.price
+                            ? `
+                                <p class="product-price">
+                                    ₹${esc(product.price)}
+                                </p>
+                              `
+                            : ""
+                    }
 
-                <h3>
-                    ${esc(
-                        product.name
-                    )}
-                </h3>
+                    <p class="product-rating">
+                        ⭐ ${esc(product.rating || "5")} / 5
+                    </p>
 
-                <p>
-                    ${esc(
-                        product.description
-                    )}
-                </p>
+                    ${
+                        product.discount
+                            ? `
+                                <p>
+                                    🔥 ${esc(product.discount)}
+                                </p>
+                              `
+                            : ""
+                    }
 
-                ${
-                    product.price
-                    ? `
-                        <p
-                            class="product-price"
-                        >
-                            ₹${esc(
-                                product.price
-                            )}
-                        </p>
-                    `
-                    : ""
-                }
+                    ${
+                        product.trending
+                            ? `
+                                <p>
+                                    🔥 Trending
+                                </p>
+                              `
+                            : ""
+                    }
 
-                <p
-                    class="product-rating"
-                >
-                    ⭐ ${esc(
-                        product.rating || "5"
-                    )} / 5
-                </p>
+                    ${
+                        product.featured
+                            ? `
+                                <p>
+                                    ⭐ Featured
+                                </p>
+                              `
+                            : ""
+                    }
 
-                ${
-                    product.discount
-                    ? `
-                        <p>
-                            🔥 ${esc(
-                                product.discount
-                            )}
-                        </p>
-                    `
-                    : ""
-                }
+                    ${
+                        purchaseURL !== "#"
+                            ? `
+                                <a
+                                    class="btn primary"
+                                    href="${esc(purchaseURL)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer nofollow"
+                                >
+                                    ${esc(type.button)}
+                                </a>
+                              `
+                            : `
+                                <button
+                                    class="btn primary"
+                                    type="button"
+                                    disabled
+                                >
+                                    Link Coming Soon
+                                </button>
+                              `
+                    }
 
-                ${
-                    product.trending
-                    ? `
-                        <p>
-                            🔥 Trending
-                        </p>
-                    `
-                    : ""
-                }
+                    ${
+                        product.productType === "affiliate" &&
+                        product.directLink
+                            ? `
+                                <a
+                                    class="btn secondary"
+                                    href="${esc(product.directLink)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Visit Official Site
+                                </a>
+                              `
+                            : ""
+                    }
 
-                ${
-                    product.featured
-                    ? `
-                        <p>
-                            ⭐ Featured
-                        </p>
-                    `
-                    : ""
-                }
+                    ${
+                        product.productType === "sengol" &&
+                        product.directLink
+                            ? `
+                                <a
+                                    class="btn secondary"
+                                    href="${esc(product.directLink)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More Details
+                                </a>
+                              `
+                            : ""
+                    }
 
-                ${
-                    purchaseURL !== "#"
-                    ? `
-                        <a
-                            class="btn primary"
-                            href="${esc(
-                                purchaseURL
-                            )}"
-                            target="_blank"
-                            rel="noopener noreferrer nofollow"
-                        >
-                            ${esc(type.button)}
-                        </a>
-                    `
-                    : `
-                        <button
-                            class="btn primary"
-                            type="button"
-                            disabled
-                        >
-                            Link Coming Soon
-                        </button>
-                    `
-                }
-
-                ${
-                    product.productType === "affiliate" &&
-                    product.directLink
-                    ? `
-                        <a
-                            class="btn secondary"
-                            href="${esc(
-                                product.directLink
-                            )}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Visit Official Site
-                        </a>
-                    `
-                    : ""
-                }
-
-                ${
-                    product.productType === "sengol" &&
-                    product.directLink
-                    ? `
-                        <a
-                            class="btn secondary"
-                            href="${esc(
-                                product.directLink
-                            )}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            More Details
-                        </a>
-                    `
-                    : ""
-                }
-
-            </article>
-
+                </article>
             `;
-
-        }).join("");
+        }
+    ).join("");
 
     if (empty) {
-
-        empty.hidden =
-            list.length !== 0;
-
+        empty.hidden = list.length !== 0;
     }
 }
 
@@ -689,61 +570,43 @@ function renderProducts() {
 ========================= */
 
 function renderSocials() {
-
     const grid =
-        document.getElementById(
-            "social-grid"
-        );
+        document.getElementById("social-grid");
 
     if (!grid) return;
 
-    grid.innerHTML =
-        SOCIALS.map(
-            social => {
+    grid.innerHTML = SOCIALS.map(
+        function (social) {
+            const disabled =
+                !social[1] ||
+                social[1] === "#";
 
-                const disabled =
-                    !social[1] ||
-                    social[1] === "#";
-
-                if (disabled) {
-
-                    return `
-
-                        <div
-                            class="social-card"
-                            style="opacity:.5"
-                        >
-                            ${esc(
-                                social[0]
-                            )}
-                            <small>
-                                Coming Soon
-                            </small>
-                        </div>
-
-                    `;
-
-                }
-
+            if (disabled) {
                 return `
-
-                    <a
+                    <div
                         class="social-card"
-                        href="${esc(
-                            social[1]
-                        )}"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        style="opacity:.5"
                     >
-                        ${esc(
-                            social[0]
-                        )} →
-                    </a>
-
+                        ${esc(social[0])}
+                        <small>
+                            Coming Soon
+                        </small>
+                    </div>
                 `;
-
             }
-        ).join("");
+
+            return `
+                <a
+                    class="social-card"
+                    href="${esc(social[1])}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    ${esc(social[0])} →
+                </a>
+            `;
+        }
+    ).join("");
 }
 
 /* =========================
@@ -751,41 +614,26 @@ function renderSocials() {
 ========================= */
 
 function initAuth() {
-
     const modal =
-        document.getElementById(
-            "auth-modal"
-        );
+        document.getElementById("auth-modal");
 
     const login =
-        document.getElementById(
-            "login-btn"
-        );
+        document.getElementById("login-btn");
 
     const form =
-        document.getElementById(
-            "auth-form"
-        );
+        document.getElementById("auth-form");
 
     const toggle =
-        document.getElementById(
-            "toggle-auth"
-        );
+        document.getElementById("toggle-auth");
 
     const logout =
-        document.getElementById(
-            "logout-btn"
-        );
+        document.getElementById("logout-btn");
 
     const title =
-        document.getElementById(
-            "auth-title"
-        );
+        document.getElementById("auth-title");
 
     const name =
-        document.getElementById(
-            "auth-name"
-        );
+        document.getElementById("auth-name");
 
     if (
         !modal ||
@@ -800,33 +648,29 @@ function initAuth() {
     let signup = false;
 
     function refresh() {
+        let user = null;
 
-        const user =
-            JSON.parse(
+        try {
+            user = JSON.parse(
                 localStorage.getItem(
                     "sengolUser"
                 ) || "null"
             );
+        } catch (e) {
+            user = null;
+        }
 
         login.textContent =
             user
                 ? `Hi, ${user.name}`
                 : "Login";
 
-        logout.hidden =
-            !user;
-
-        form.hidden =
-            !!user;
-
-        toggle.hidden =
-            !!user;
+        logout.hidden = !user;
+        form.hidden = !!user;
+        toggle.hidden = !!user;
 
         if (name) {
-
-            name.required =
-                signup;
-
+            name.required = signup;
         }
     }
 
@@ -834,19 +678,15 @@ function initAuth() {
 
     login.addEventListener(
         "click",
-        () => {
-
+        function () {
             modal.hidden = false;
-
         }
     );
 
     toggle.addEventListener(
         "click",
-        () => {
-
-            signup =
-                !signup;
+        function () {
+            signup = !signup;
 
             title.textContent =
                 signup
@@ -859,32 +699,40 @@ function initAuth() {
                     : "Create account";
 
             if (name) {
-
-                name.required =
-                    signup;
-
+                name.required = signup;
             }
-
         }
     );
 
     form.addEventListener(
         "submit",
-        e => {
-
+        function (e) {
             e.preventDefault();
 
-            const user = {
+            const email =
+                document.getElementById(
+                    "auth-email"
+                );
 
+            const password =
+                document.getElementById(
+                    "auth-password"
+                );
+
+            const user = {
                 name:
                     name.value.trim() ||
                     "Customer",
 
                 email:
-                    document.getElementById(
-                        "auth-email"
-                    ).value
+                    email
+                        ? email.value.trim()
+                        : "",
 
+                password:
+                    password
+                        ? password.value
+                        : ""
             };
 
             localStorage.setItem(
@@ -899,20 +747,17 @@ function initAuth() {
             modal.hidden = true;
 
             refresh();
-
         }
     );
 
     logout.addEventListener(
         "click",
-        () => {
-
+        function () {
             localStorage.removeItem(
                 "sengolUser"
             );
 
             refresh();
-
         }
     );
 }
@@ -922,7 +767,6 @@ function initAuth() {
 ========================= */
 
 function initAffiliate() {
-
     const button =
         document.getElementById(
             "generate-affiliate"
@@ -944,13 +788,11 @@ function initAffiliate() {
 
     button.addEventListener(
         "click",
-        () => {
-
+        function () {
             const url =
                 input.value.trim();
 
             if (!url) {
-
                 result.textContent =
                     "Paste an authorized affiliate URL first.";
 
@@ -958,11 +800,9 @@ function initAffiliate() {
             }
 
             try {
-
                 new URL(url);
 
                 result.innerHTML = `
-
                     <p>
                         Authorized URL prepared:
                     </p>
@@ -979,7 +819,6 @@ function initAffiliate() {
                     >
                         Copy Link
                     </button>
-
                 `;
 
                 const copy =
@@ -987,21 +826,10 @@ function initAffiliate() {
                         "copy-affiliate"
                     );
 
-                copy.onclick =
-                    () => {
-
-                        navigator.clipboard
-                            .writeText(url)
-                            .then(
-                                () =>
-                                    alert(
-                                        "Link copied."
-                                    )
-                            );
-
-                    };
-
-            } catch (e) {
-
-                result.textContent =
-                    "Ple
+                if (copy) {
+                    copy.addEventListener(
+                        "click",
+                        function () {
+                            if (
+                                navigator.clipboard &&
+                             
