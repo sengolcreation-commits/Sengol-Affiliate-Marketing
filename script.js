@@ -1,1 +1,1007 @@
-const STORAGE_KEY="sengolShoppingProducts";const SOCIALS=[["Instagram","https://www.instagram.com/sengol_fashion?igsh=MXJmdmk3cWx1MWkwdQ=="],["Pinterest","https://pin.it/1gLdGoSRR"],["Facebook","https://www.facebook.com/profile.php?id=61593100736281&mibextid=ZbWKwL"],["WhatsApp Channel","https://whatsapp.com/channel/0029VbCpLAEJpe8ds88N1m08"],["YouTube","https://youtube.com/@sengolgroup?si=4YkCgFKl-msRLu_3"],["X / Twitter","#"],["Telegram","#"]];const PLATFORMS=[["Amazon","#","https://www.amazon.in/"],["Flipkart","#","https://www.flipkart.com/"],["Meesho","#","https://www.meesho.com/"],["Myntra","#","https://www.myntra.com/"],["AJIO","#","https://www.ajio.com/"],["Tata CLiQ","#","https://www.tatacliq.com/"],["Shopsy","#","https://www.shopsy.in/"]];function products(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}function esc(v){return String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}function initWelcome(){const w=document.getElementById("welcome-screen"),b=document.getElementById("enter-site");if(!w)return;b.addEventListener("click",()=>w.classList.add("hide"));setTimeout(()=>w.classList.add("hide"),7000)}function initMenu(){const b=document.getElementById("menu-btn"),m=document.getElementById("main-menu");if(!b||!m)return;b.addEventListener("click",()=>{m.classList.toggle("menu-open");b.setAttribute("aria-expanded",m.classList.contains("menu-open"))});m.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>m.classList.remove("menu-open")))}function renderPlatforms(){const g=document.getElementById("platform-grid");if(!g)return;g.innerHTML=PLATFORMS.map((p,i)=>`<button class="platform-card" data-platform="${i}"><div class="platform-logo">${esc(p[0])}</div><span>Explore →</span></button>`).join("");g.querySelectorAll("[data-platform]").forEach(b=>b.addEventListener("click",()=>openPlatform(Number(b.dataset.platform))))}function openPlatform(i){const p=PLATFORMS[i],m=document.getElementById("platform-modal"),a=document.getElementById("platform-actions"),t=document.getElementById("platform-title");t.textContent=p[0];a.innerHTML=`<a class="btn primary" href="${p[1]==="#"?p[2]:p[1]}" target="_blank" rel="noopener noreferrer nofollow">Shop with Sengol Affiliate</a><a class="btn secondary" href="${p[2]}" target="_blank" rel="noopener noreferrer">Visit ${esc(p[0])} Directly</a>`;m.hidden=false}function renderProducts(){const g=document.getElementById("product-grid"),e=document.getElementById("empty-products"),q=(document.getElementById("product-search")?.value||"").toLowerCase(),c=document.getElementById("category-filter")?.value||"all";if(!g)return;let list=products().filter(p=>(c==="all"||p.category===c)&&(!q||p.name.toLowerCase().includes(q)||p.description.toLowerCase().includes(q)));g.innerHTML=list.map(p=>`<article class="product-card"><div class="product-image"><img src="${esc(p.image||"")}" alt="${esc(p.name)}"></div><p class="product-category">${esc(p.category)}</p><h3>${esc(p.name)}</h3><p>${esc(p.description)}</p>${p.price?`<p class="product-price">₹${esc(p.price)}</p>`:""}<p class="product-rating">Rating: ${esc(p.rating||"5")} / 5</p><a class="btn primary" href="${esc(p.affiliateLink||"#")}" target="_blank" rel="noopener noreferrer nofollow">Shop Now →</a></article>`).join("");e.hidden=list.length!==0}function renderSocials(){const g=document.getElementById("social-grid");if(!g)return;g.innerHTML=SOCIALS.map(s=>`<a class="social-card" href="${s[1]}" target="_blank" rel="noopener noreferrer">${esc(s[0])} →</a>`).join("")}function initAuth(){const modal=document.getElementById("auth-modal"),login=document.getElementById("login-btn"),form=document.getElementById("auth-form"),toggle=document.getElementById("toggle-auth"),logout=document.getElementById("logout-btn"),title=document.getElementById("auth-title"),name=document.getElementById("auth-name");let signup=false;function refresh(){const u=JSON.parse(localStorage.getItem("sengolUser")||"null");login.textContent=u?`Hi, ${u.name}`:"Login";logout.hidden=!u;form.hidden=!!u;toggle.hidden=!!u;name.required=signup}refresh();login.addEventListener("click",()=>modal.hidden=false);toggle.addEventListener("click",()=>{signup=!signup;title.textContent=signup?"Create account":"Login";toggle.textContent=signup?"Already have an account? Login":"Create account";name.required=signup});form.addEventListener("submit",e=>{e.preventDefault();const u={name:name.value.trim()||"Customer",email:document.getElementById("auth-email").value};localStorage.setItem("sengolUser",JSON.stringify(u));alert("Account saved on this device.");modal.hidden=true;refresh()});logout.addEventListener("click",()=>{localStorage.removeItem("sengolUser");refresh()})}function initAffiliate(){const b=document.getElementById("generate-affiliate"),i=document.getElementById("affiliate-source"),r=document.getElementById("affiliate-result");if(!b)return;b.addEventListener("click",()=>{const u=i.value.trim();if(!u){r.textContent="Paste an authorized affiliate URL first.";return}try{new URL(u);r.innerHTML=`<p>Authorized URL prepared:</p><input value="${esc(u)}" readonly><button class="btn primary" id="copy-affiliate">Copy Link</button>`;document.getElementById("copy-affiliate").onclick=()=>navigator.clipboard.writeText(u).then(()=>alert("Link copied."))}catch(e){r.textContent="Please enter a valid URL."}})}document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>document.getElementById(b.dataset.close).hidden=true));document.addEventListener("DOMContentLoaded",()=>{initWelcome();initMenu();renderPlatforms();renderProducts();renderSocials();initAuth();initAffiliate();document.getElementById("product-search")?.addEventListener("input",renderProducts);document.getElementById("category-filter")?.addEventListener("change",renderProducts);document.getElementById("sell-form")?.addEventListener("submit",e=>{e.preventDefault();alert("Product submission received. Admin review is required before publishing.");e.target.reset()})});
+ const STORAGE_KEY = "sengolShoppingProducts";
+
+const SOCIALS = [
+    [
+        "Instagram",
+        "https://www.instagram.com/sengol_fashion?igsh=MXJmdmk3cWx1MWkwdQ=="
+    ],
+    [
+        "Pinterest",
+        "https://pin.it/1gLdGoSRR"
+    ],
+    [
+        "Facebook",
+        "https://www.facebook.com/profile.php?id=61593100736281&mibextid=ZbWKwL"
+    ],
+    [
+        "WhatsApp Channel",
+        "https://whatsapp.com/channel/0029VbCpLAEJpe8ds88N1m08"
+    ],
+    [
+        "YouTube",
+        "https://youtube.com/@sengolgroup?si=4YkCgFKl-msRLu_3"
+    ],
+    [
+        "X / Twitter",
+        "#"
+    ],
+    [
+        "Telegram",
+        "#"
+    ]
+];
+
+/* =========================
+   SHOPPING PLATFORMS
+========================= */
+
+const PLATFORMS = [
+    [
+        "Amazon",
+        "#",
+        "https://www.amazon.in/"
+    ],
+    [
+        "Flipkart",
+        "#",
+        "https://www.flipkart.com/"
+    ],
+    [
+        "Meesho",
+        "#",
+        "https://www.meesho.com/"
+    ],
+    [
+        "Myntra",
+        "#",
+        "https://www.myntra.com/"
+    ],
+    [
+        "AJIO",
+        "#",
+        "https://www.ajio.com/"
+    ],
+    [
+        "Tata CLiQ",
+        "#",
+        "https://www.tatacliq.com/"
+    ],
+    [
+        "Shopsy",
+        "#",
+        "https://www.shopsy.in/"
+    ]
+];
+
+/* =========================
+   GET PRODUCTS
+========================= */
+
+function products() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(STORAGE_KEY)
+        ) || [];
+
+    } catch (e) {
+
+        return [];
+
+    }
+}
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function esc(value) {
+
+    return String(value || "").replace(
+        /[&<>"']/g,
+        m => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        }[m])
+    );
+}
+
+/* =========================
+   WELCOME SCREEN
+========================= */
+
+function initWelcome() {
+
+    const welcome =
+        document.getElementById("welcome-screen");
+
+    const button =
+        document.getElementById("enter-site");
+
+    if (!welcome) return;
+
+    if (button) {
+
+        button.addEventListener(
+            "click",
+            () => {
+                welcome.classList.add("hide");
+            }
+        );
+
+    }
+
+    setTimeout(
+        () => welcome.classList.add("hide"),
+        7000
+    );
+}
+
+/* =========================
+   MOBILE MENU
+========================= */
+
+function initMenu() {
+
+    const button =
+        document.getElementById("menu-btn");
+
+    const menu =
+        document.getElementById("main-menu");
+
+    if (!button || !menu) return;
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            menu.classList.toggle(
+                "menu-open"
+            );
+
+            button.setAttribute(
+                "aria-expanded",
+                menu.classList.contains(
+                    "menu-open"
+                )
+            );
+
+        }
+    );
+
+    menu
+        .querySelectorAll("a")
+        .forEach(link => {
+
+            link.addEventListener(
+                "click",
+                () => {
+                    menu.classList.remove(
+                        "menu-open"
+                    );
+                }
+            );
+
+        });
+}
+
+/* =========================
+   PLATFORM GRID
+========================= */
+
+function renderPlatforms() {
+
+    const grid =
+        document.getElementById(
+            "platform-grid"
+        );
+
+    if (!grid) return;
+
+    grid.innerHTML =
+        PLATFORMS.map(
+            (platform, index) => `
+
+            <button
+                class="platform-card"
+                data-platform="${index}"
+                type="button"
+            >
+
+                <div class="platform-logo">
+                    ${esc(platform[0])}
+                </div>
+
+                <span>
+                    Explore →
+                </span>
+
+            </button>
+
+        `
+        ).join("");
+
+    grid
+        .querySelectorAll(
+            "[data-platform]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openPlatform(
+                        Number(
+                            button.dataset.platform
+                        )
+                    );
+
+                }
+            );
+
+        });
+}
+
+/* =========================
+   PLATFORM MODAL
+========================= */
+
+function openPlatform(index) {
+
+    const platform =
+        PLATFORMS[index];
+
+    if (!platform) return;
+
+    const modal =
+        document.getElementById(
+            "platform-modal"
+        );
+
+    const actions =
+        document.getElementById(
+            "platform-actions"
+        );
+
+    const title =
+        document.getElementById(
+            "platform-title"
+        );
+
+    if (!modal || !actions || !title) {
+        return;
+    }
+
+    title.textContent =
+        platform[0];
+
+    const affiliateUrl =
+        platform[1];
+
+    const directUrl =
+        platform[2];
+
+    let affiliateButton = "";
+
+    if (
+        affiliateUrl &&
+        affiliateUrl !== "#"
+    ) {
+
+        affiliateButton = `
+
+            <a
+                class="btn primary"
+                href="${esc(affiliateUrl)}"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+            >
+                🔗 Shop with Sengol Affiliate
+            </a>
+
+        `;
+
+    } else {
+
+        affiliateButton = `
+
+            <div class="notice">
+
+                Affiliate route for
+                ${esc(platform[0])}
+                is not connected yet.
+
+            </div>
+
+        `;
+
+    }
+
+    actions.innerHTML = `
+
+        ${affiliateButton}
+
+        <a
+            class="btn secondary"
+            href="${esc(directUrl)}"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            🏪 Visit ${esc(platform[0])} Directly
+        </a>
+
+    `;
+
+    modal.hidden = false;
+}
+
+/* =========================
+   PRODUCT TYPE
+========================= */
+
+function getProductType(type) {
+
+    if (type === "sengol") {
+
+        return {
+            label: "🛍️ Sengol Product",
+            button: "Buy Sengol Product →"
+        };
+
+    }
+
+    if (type === "affiliate") {
+
+        return {
+            label: "🔗 Affiliate Product",
+            button: "Shop via Sengol →"
+        };
+
+    }
+
+    if (type === "marketplace") {
+
+        return {
+            label: "🏪 Marketplace Product",
+            button: "Visit Store →"
+        };
+
+    }
+
+    return {
+        label: "Product",
+        button: "Shop Now →"
+    };
+}
+
+/* =========================
+   PRODUCT PURCHASE URL
+========================= */
+
+function getProductURL(product) {
+
+    /*
+       Sengol product:
+       Prefer direct product link.
+
+       Affiliate product:
+       Prefer authorized affiliate link.
+
+       Marketplace product:
+       Prefer direct official link,
+       otherwise purchase link.
+    */
+
+    if (product.productType === "sengol") {
+
+        return (
+            product.directLink ||
+            product.affiliateLink ||
+            "#"
+        );
+
+    }
+
+    if (product.productType === "affiliate") {
+
+        return (
+            product.affiliateLink ||
+            product.directLink ||
+            "#"
+        );
+
+    }
+
+    if (product.productType === "marketplace") {
+
+        return (
+            product.directLink ||
+            product.affiliateLink ||
+            "#"
+        );
+
+    }
+
+    return (
+        product.affiliateLink ||
+        product.directLink ||
+        "#"
+    );
+}
+
+/* =========================
+   RENDER PRODUCTS
+========================= */
+
+function renderProducts() {
+
+    const grid =
+        document.getElementById(
+            "product-grid"
+        );
+
+    const empty =
+        document.getElementById(
+            "empty-products"
+        );
+
+    const search =
+        (
+            document.getElementById(
+                "product-search"
+            )?.value || ""
+        ).toLowerCase();
+
+    const category =
+        document.getElementById(
+            "category-filter"
+        )?.value || "all";
+
+    if (!grid) return;
+
+    const list =
+        products().filter(product => {
+
+            const name =
+                (
+                    product.name || ""
+                ).toLowerCase();
+
+            const description =
+                (
+                    product.description || ""
+                ).toLowerCase();
+
+            return (
+
+                (
+                    category === "all" ||
+                    product.category === category
+                )
+
+                &&
+
+                (
+                    !search ||
+                    name.includes(search) ||
+                    description.includes(search)
+                )
+
+            );
+
+        });
+
+    grid.innerHTML =
+        list.map(product => {
+
+            const type =
+                getProductType(
+                    product.productType
+                );
+
+            const purchaseURL =
+                getProductURL(product);
+
+            return `
+
+            <article
+                class="product-card"
+            >
+
+                <div
+                    class="product-image"
+                >
+
+                    <img
+                        src="${esc(
+                            product.image || ""
+                        )}"
+                        alt="${esc(
+                            product.name
+                        )}"
+                        loading="lazy"
+                    >
+
+                </div>
+
+                <p
+                    class="product-category"
+                >
+                    ${esc(
+                        product.category
+                    )}
+                </p>
+
+                <p>
+                    <strong>
+                        ${esc(type.label)}
+                    </strong>
+                </p>
+
+                <h3>
+                    ${esc(
+                        product.name
+                    )}
+                </h3>
+
+                <p>
+                    ${esc(
+                        product.description
+                    )}
+                </p>
+
+                ${
+                    product.price
+                    ? `
+                        <p
+                            class="product-price"
+                        >
+                            ₹${esc(
+                                product.price
+                            )}
+                        </p>
+                    `
+                    : ""
+                }
+
+                <p
+                    class="product-rating"
+                >
+                    ⭐ ${esc(
+                        product.rating || "5"
+                    )} / 5
+                </p>
+
+                ${
+                    product.discount
+                    ? `
+                        <p>
+                            🔥 ${esc(
+                                product.discount
+                            )}
+                        </p>
+                    `
+                    : ""
+                }
+
+                ${
+                    product.trending
+                    ? `
+                        <p>
+                            🔥 Trending
+                        </p>
+                    `
+                    : ""
+                }
+
+                ${
+                    product.featured
+                    ? `
+                        <p>
+                            ⭐ Featured
+                        </p>
+                    `
+                    : ""
+                }
+
+                ${
+                    purchaseURL !== "#"
+                    ? `
+                        <a
+                            class="btn primary"
+                            href="${esc(
+                                purchaseURL
+                            )}"
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                        >
+                            ${esc(type.button)}
+                        </a>
+                    `
+                    : `
+                        <button
+                            class="btn primary"
+                            type="button"
+                            disabled
+                        >
+                            Link Coming Soon
+                        </button>
+                    `
+                }
+
+                ${
+                    product.productType === "affiliate" &&
+                    product.directLink
+                    ? `
+                        <a
+                            class="btn secondary"
+                            href="${esc(
+                                product.directLink
+                            )}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Visit Official Site
+                        </a>
+                    `
+                    : ""
+                }
+
+                ${
+                    product.productType === "sengol" &&
+                    product.directLink
+                    ? `
+                        <a
+                            class="btn secondary"
+                            href="${esc(
+                                product.directLink
+                            )}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            More Details
+                        </a>
+                    `
+                    : ""
+                }
+
+            </article>
+
+            `;
+
+        }).join("");
+
+    if (empty) {
+
+        empty.hidden =
+            list.length !== 0;
+
+    }
+}
+
+/* =========================
+   SOCIAL LINKS
+========================= */
+
+function renderSocials() {
+
+    const grid =
+        document.getElementById(
+            "social-grid"
+        );
+
+    if (!grid) return;
+
+    grid.innerHTML =
+        SOCIALS.map(
+            social => {
+
+                const disabled =
+                    !social[1] ||
+                    social[1] === "#";
+
+                if (disabled) {
+
+                    return `
+
+                        <div
+                            class="social-card"
+                            style="opacity:.5"
+                        >
+                            ${esc(
+                                social[0]
+                            )}
+                            <small>
+                                Coming Soon
+                            </small>
+                        </div>
+
+                    `;
+
+                }
+
+                return `
+
+                    <a
+                        class="social-card"
+                        href="${esc(
+                            social[1]
+                        )}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        ${esc(
+                            social[0]
+                        )} →
+                    </a>
+
+                `;
+
+            }
+        ).join("");
+}
+
+/* =========================
+   LOGIN / ACCOUNT
+========================= */
+
+function initAuth() {
+
+    const modal =
+        document.getElementById(
+            "auth-modal"
+        );
+
+    const login =
+        document.getElementById(
+            "login-btn"
+        );
+
+    const form =
+        document.getElementById(
+            "auth-form"
+        );
+
+    const toggle =
+        document.getElementById(
+            "toggle-auth"
+        );
+
+    const logout =
+        document.getElementById(
+            "logout-btn"
+        );
+
+    const title =
+        document.getElementById(
+            "auth-title"
+        );
+
+    const name =
+        document.getElementById(
+            "auth-name"
+        );
+
+    if (
+        !modal ||
+        !login ||
+        !form ||
+        !toggle ||
+        !logout
+    ) {
+        return;
+    }
+
+    let signup = false;
+
+    function refresh() {
+
+        const user =
+            JSON.parse(
+                localStorage.getItem(
+                    "sengolUser"
+                ) || "null"
+            );
+
+        login.textContent =
+            user
+                ? `Hi, ${user.name}`
+                : "Login";
+
+        logout.hidden =
+            !user;
+
+        form.hidden =
+            !!user;
+
+        toggle.hidden =
+            !!user;
+
+        if (name) {
+
+            name.required =
+                signup;
+
+        }
+    }
+
+    refresh();
+
+    login.addEventListener(
+        "click",
+        () => {
+
+            modal.hidden = false;
+
+        }
+    );
+
+    toggle.addEventListener(
+        "click",
+        () => {
+
+            signup =
+                !signup;
+
+            title.textContent =
+                signup
+                    ? "Create account"
+                    : "Login";
+
+            toggle.textContent =
+                signup
+                    ? "Already have an account? Login"
+                    : "Create account";
+
+            if (name) {
+
+                name.required =
+                    signup;
+
+            }
+
+        }
+    );
+
+    form.addEventListener(
+        "submit",
+        e => {
+
+            e.preventDefault();
+
+            const user = {
+
+                name:
+                    name.value.trim() ||
+                    "Customer",
+
+                email:
+                    document.getElementById(
+                        "auth-email"
+                    ).value
+
+            };
+
+            localStorage.setItem(
+                "sengolUser",
+                JSON.stringify(user)
+            );
+
+            alert(
+                "Account saved on this device."
+            );
+
+            modal.hidden = true;
+
+            refresh();
+
+        }
+    );
+
+    logout.addEventListener(
+        "click",
+        () => {
+
+            localStorage.removeItem(
+                "sengolUser"
+            );
+
+            refresh();
+
+        }
+    );
+}
+
+/* =========================
+   AFFILIATE CENTER
+========================= */
+
+function initAffiliate() {
+
+    const button =
+        document.getElementById(
+            "generate-affiliate"
+        );
+
+    const input =
+        document.getElementById(
+            "affiliate-source"
+        );
+
+    const result =
+        document.getElementById(
+            "affiliate-result"
+        );
+
+    if (!button || !input || !result) {
+        return;
+    }
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const url =
+                input.value.trim();
+
+            if (!url) {
+
+                result.textContent =
+                    "Paste an authorized affiliate URL first.";
+
+                return;
+            }
+
+            try {
+
+                new URL(url);
+
+                result.innerHTML = `
+
+                    <p>
+                        Authorized URL prepared:
+                    </p>
+
+                    <input
+                        value="${esc(url)}"
+                        readonly
+                    >
+
+                    <button
+                        class="btn primary"
+                        id="copy-affiliate"
+                        type="button"
+                    >
+                        Copy Link
+                    </button>
+
+                `;
+
+                const copy =
+                    document.getElementById(
+                        "copy-affiliate"
+                    );
+
+                copy.onclick =
+                    () => {
+
+                        navigator.clipboard
+                            .writeText(url)
+                            .then(
+                                () =>
+                                    alert(
+                                        "Link copied."
+                                    )
+                            );
+
+                    };
+
+            } catch (e) {
+
+                result.textContent =
+                    "Ple
