@@ -1,4 +1,4 @@
- const KEY = "sengolShoppingProducts";
+  const KEY = "sengolShoppingProducts";
 
 let editId = null;
 
@@ -354,56 +354,5 @@ $("productForm").addEventListener(
 
         } else {
 
-            a.unshift(p);
 
-        }
-
-
-        save(a);
-
-        const wasEditing =
-            !!editId;
-
-        reset();
-
-        render();
-
-        alert(
-            wasEditing
-                ? "Product updated successfully."
-                : "Product added successfully."
-        );
-
-    }
-);
-
-
-/* =========================
-   CLEAR
-========================= */
-
-if ($("clearBtn")) {
-
-    $("clearBtn").onclick =
-        reset;
-
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-if ($("searchProducts")) {
-
-    $("searchProducts").oninput =
-        render;
-
-}
-
-
-/* =========================
-   START
-========================= */
-
-render();
+     
