@@ -1,16 +1,338 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Sengol Admin</title><link rel="stylesheet" href="style.css"></head><body><main class="section"><div class="container"><a href="index.html">← Back to website</a><div class="section-heading"><p class="section-label">SENGOL ADMIN</p><h1>Product Dashboard</h1><p>Add, edit and delete products stored in this browser.</p></div><form id="productForm" class="panel"><input id="productName" required placeholder="Product name"><select id="productCategory"<select id="productType" required>
-  <option value="">Product Type</option>
-  <option value="sengol">Sengol Product</option>
-  <option value="affiliate">Affiliate Product</option>
-  <option value="marketplace">Marketplace Product</option>
-</select> required><option value="">Category</option><option>Fashion</option><option>Electronics</option><option>Home Decor</option><option>Other</option></select><input id="productPrice" placeholder="Price"><input id="productDiscount" placeholder="Discount e.g. 20% OFF"><input id="productImage" type="url" placeholder="Product image URL"><textarea id="productDescription" required placeholder="Description"></textarea><input
-  id="affiliateLink"
-  type="url"
-  required
-  placeholder="Purchase / Affiliate URL"
->
+ <!DOCTYPE html>
+<html lang="en">
 
-<input
-  id="directLink"
-  type="url"
-  placeholder="Direct official product/store URL"><select id="productRating"><option>5</option><option>4.5</option><option>4</option><option>3.5</option><option>3</option></select><label><input id="isTrending" type="checkbox"> Trending</label><label><input id="isFeatured" type="checkbox"> Featured</label><div class="actions"><button id="submitBtn" class="btn primary" type="submit">Add Product</button><button id="clearBtn" class="btn secondary" type="button">Clear</button></div></form><div class="toolbar"><input id="searchProducts" placeholder="Search admin products..."></div><div id="productList"></div></div></main><script src="admin.js"></script></body></html>
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Sengol Admin Dashboard - Manage products."
+    >
+
+    <title>Sengol Admin Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+<main class="section">
+
+    <div class="container">
+
+        <!-- BACK TO WEBSITE -->
+
+        <a
+            href="index.html"
+            class="text-btn"
+        >
+            ← Back to Sengol Website
+        </a>
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="section-heading">
+
+            <p class="section-label">
+                SENGOL ADMIN
+            </p>
+
+            <h1>
+                Product Dashboard
+            </h1>
+
+            <p>
+                Add, edit, manage and delete products
+                displayed on the Sengol website.
+            </p>
+
+        </div>
+
+
+        <!-- PRODUCT FORM -->
+
+        <form
+            id="productForm"
+            class="panel"
+        >
+
+            <!-- PRODUCT NAME -->
+
+            <input
+                id="productName"
+                type="text"
+                required
+                placeholder="Product name"
+            >
+
+
+            <!-- PRODUCT TYPE -->
+
+            <select
+                id="productType"
+                required
+            >
+
+                <option value="">
+                    Select Product Type
+                </option>
+
+                <option value="affiliate">
+                    Affiliate Product
+                </option>
+
+                <option value="marketplace">
+                    Marketplace Product
+                </option>
+
+                <option value="sengol">
+                    Sengol Product
+                </option>
+
+            </select>
+
+
+            <!-- CATEGORY -->
+
+            <select
+                id="productCategory"
+                required
+            >
+
+                <option value="">
+                    Select Category
+                </option>
+
+                <option value="Fashion">
+                    Fashion
+                </option>
+
+                <option value="Electronics">
+                    Electronics
+                </option>
+
+                <option value="Home Decor">
+                    Home Decor
+                </option>
+
+                <option value="Beauty">
+                    Beauty
+                </option>
+
+                <option value="Grocery">
+                    Grocery
+                </option>
+
+                <option value="Sports">
+                    Sports
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+
+            <!-- PRICE -->
+
+            <input
+                id="productPrice"
+                type="text"
+                placeholder="Price e.g. 999"
+            >
+
+
+            <!-- DISCOUNT -->
+
+            <input
+                id="productDiscount"
+                type="text"
+                placeholder="Discount e.g. 20% OFF"
+            >
+
+
+            <!-- PRODUCT IMAGE -->
+
+            <input
+                id="productImage"
+                type="url"
+                placeholder="Product image URL"
+            >
+
+
+            <!-- DESCRIPTION -->
+
+            <textarea
+                id="productDescription"
+                required
+                placeholder="Product description"
+            ></textarea>
+
+
+            <!-- AFFILIATE / PURCHASE LINK -->
+
+            <input
+                id="affiliateLink"
+                type="url"
+                required
+                placeholder="Purchase / Affiliate URL"
+            >
+
+
+            <!-- DIRECT OFFICIAL LINK -->
+
+            <input
+                id="directLink"
+                type="url"
+                placeholder="Direct official product/store URL"
+            >
+
+
+            <!-- RATING -->
+
+            <select
+                id="productRating"
+            >
+
+                <option value="5">
+                    5 / 5
+                </option>
+
+                <option value="4.5">
+                    4.5 / 5
+                </option>
+
+                <option value="4">
+                    4 / 5
+                </option>
+
+                <option value="3.5">
+                    3.5 / 5
+                </option>
+
+                <option value="3">
+                    3 / 5
+                </option>
+
+                <option value="2.5">
+                    2.5 / 5
+                </option>
+
+                <option value="2">
+                    2 / 5
+                </option>
+
+                <option value="1">
+                    1 / 5
+                </option>
+
+            </select>
+
+
+            <!-- TRENDING -->
+
+            <label>
+
+                <input
+                    id="isTrending"
+                    type="checkbox"
+                >
+
+                Trending Product
+
+            </label>
+
+
+            <!-- FEATURED -->
+
+            <label>
+
+                <input
+                    id="isFeatured"
+                    type="checkbox"
+                >
+
+                Featured Product
+
+            </label>
+
+
+            <!-- BUTTONS -->
+
+            <div class="actions">
+
+                <button
+                    id="submitBtn"
+                    class="btn primary"
+                    type="submit"
+                >
+                    Add Product
+                </button>
+
+
+                <button
+                    id="clearBtn"
+                    class="btn secondary"
+                    type="button"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <!-- SEARCH -->
+
+        <div class="section-heading">
+
+            <p class="section-label">
+                PRODUCT MANAGEMENT
+            </p>
+
+            <h2>
+                Your Products
+            </h2>
+
+        </div>
+
+
+        <div class="toolbar">
+
+            <input
+                id="searchProducts"
+                type="search"
+                placeholder="Search products..."
+            >
+
+        </div>
+
+
+        <!-- PRODUCT LIST -->
+
+        <div id="productList"></div>
+
+
+    </div>
+
+</main>
+
+
+<!-- ADMIN JAVASCRIPT -->
+
+<script src="admin.js"></script>
+
+</body>
+
+</html>
